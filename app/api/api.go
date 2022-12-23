@@ -8,19 +8,29 @@ import (
 	"github.com/rs/zerolog"
 )
 
-type Api struct {
-	log *zerolog.Logger
+type Tests interface {
+	Search(c *gin.Context)
 }
 
-func New() *Api {
+type Api struct {
+	log *zerolog.Logger
+
+	tests Tests
+}
+
+func New(tests Tests) *Api {
 	return &Api{
-		log: log.For("api"),
+		log:   log.For("api"),
+		tests: tests,
 	}
 }
 
 func (a *Api) RegisterRoutes(router *gin.Engine) {
 	router.NoRoute(a.NoRoute)
 	router.GET("/ping", a.Ping)
+
+	tests := router.Group("/tests")
+	tests.GET("/search", a.tests.Search)
 }
 
 func (a *Api) okResponse(c *gin.Context, response any) { a.response(c, http.StatusOK, response) }

@@ -26,6 +26,10 @@ func Logger(log *zerolog.Logger) gin.HandlerFunc {
 			logger = log.Error()
 		}
 
+		if query := c.Request.URL.RawQuery; query != "" {
+			logger.Str("query", query)
+		}
+
 		logger.
 			Str("method", c.Request.Method).
 			Str("uri", c.Request.URL.Path).

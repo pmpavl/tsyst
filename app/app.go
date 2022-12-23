@@ -6,7 +6,9 @@ import (
 	"net/http"
 
 	"github.com/pmpavl/tsyst/app/api"
+	"github.com/pmpavl/tsyst/app/api/tests"
 	"github.com/pmpavl/tsyst/app/router"
+	"github.com/pmpavl/tsyst/db"
 	"github.com/pmpavl/tsyst/resources"
 	"github.com/rs/zerolog"
 	"golang.org/x/sync/errgroup"
@@ -22,7 +24,12 @@ func New(log *zerolog.Logger) *App {
 
 func (a *App) Start(ctx context.Context) error {
 	res := resources.New(ctx)
-	api := api.New()
+
+	dbTests := db.NewDBTests(res.Mongo)
+
+	tests := tests.New(dbTests)
+
+	api := api.New(tests)
 	rtr := router.New(api)
 
 	srv := &http.Server{

@@ -14,6 +14,8 @@ type Env struct {
 	LogLevel        string `env:"LOG_LEVEL, default=debug"`
 	LogFormat       string `env:"LOG_FORMAT, default=console"`
 	GinMode         string `env:"GIN_MODE, default=release"`
+	MongoHost       string `env:"MONGO_HOST, required"`
+	MongoDatabase   string `env:"MONGO_DATABASE, default=tsyst"`
 }
 
 func (r *Resources) getEnv(ctx context.Context) error {

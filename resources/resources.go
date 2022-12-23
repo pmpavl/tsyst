@@ -5,11 +5,15 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+	"github.com/pkg/errors"
 	"github.com/pmpavl/tsyst/pkg/log"
+	"go.mongodb.org/mongo-driver/mongo"
+	"golang.org/x/sync/errgroup"
 )
 
 type Resources struct {
-	Env *Env
+	Env   *Env
+	Mongo *mongo.Database
 }
 
 func New(ctx context.Context) *Resources {
@@ -21,6 +25,16 @@ func New(ctx context.Context) *Resources {
 
 	if err := r.getEnv(ctx); err != nil {
 		log.Logger.Fatal().Err(err).Msg("init env")
+	}
+
+	group, ctx := errgroup.WithContext(ctx)
+
+	group.Go(func() error {
+		return errors.Wrap(r.initMongo(ctx), "init mongo")
+	})
+
+	if err := group.Wait(); err != nil {
+		log.Logger.Fatal().Err(err).Msg("init resources")
 	}
 
 	return r.setLogger().setGinMode()
