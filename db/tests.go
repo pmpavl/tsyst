@@ -55,3 +55,26 @@ func (db *DBTests) Search(ctx context.Context, page int64, name string, class ui
 
 	return tests, nil
 }
+
+func (db *DBTests) SearchCountPages(ctx context.Context, name string, class uint64) (int64, error) {
+	filter := bson.M{"name": bson.M{"$regex": name, "$options": "im"}}
+
+	if class != 0 {
+		filter["tags.classes"] = class
+	}
+
+	countTests, err := db.coll.CountDocuments(ctx, filter)
+	if err != nil {
+		return 0, errors.Wrap(err, "count tests")
+	}
+
+	if countTests == 0 {
+		return 0, nil
+	}
+
+	if countTests%LimitPerPage > 0 {
+		return (countTests / LimitPerPage) + 1, nil
+	}
+
+	return (countTests / LimitPerPage), nil
+}

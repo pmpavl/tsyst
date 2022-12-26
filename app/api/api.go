@@ -10,6 +10,7 @@ import (
 
 type Tests interface {
 	Search(c *gin.Context)
+	SearchCountPages(c *gin.Context)
 }
 
 type Api struct {
@@ -31,6 +32,7 @@ func (a *Api) RegisterRoutes(router *gin.Engine) {
 
 	tests := router.Group("/tests")
 	tests.GET("/search", a.tests.Search)
+	tests.GET("/searchCountPages", a.tests.SearchCountPages)
 }
 
 func (a *Api) okResponse(c *gin.Context, response any) { a.response(c, http.StatusOK, response) }

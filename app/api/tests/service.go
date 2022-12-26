@@ -18,6 +18,7 @@ const (
 
 type DBTests interface {
 	Search(ctx context.Context, page int64, name string, class uint64) ([]*models.Test, error)
+	SearchCountPages(ctx context.Context, name string, class uint64) (int64, error)
 }
 
 type Service struct {
