@@ -8,6 +8,15 @@ import (
 	"github.com/rs/zerolog"
 )
 
+type Auth interface {
+	Registration(c *gin.Context)
+	Authentication(c *gin.Context)
+	Identification(c *gin.Context)
+	Refresh(c *gin.Context)
+	EmailExist(c *gin.Context)
+	EmailSalt(c *gin.Context)
+}
+
 type Tests interface {
 	Search(c *gin.Context)
 	SearchCountPages(c *gin.Context)
@@ -16,12 +25,14 @@ type Tests interface {
 type Api struct {
 	log *zerolog.Logger
 
+	auth  Auth
 	tests Tests
 }
 
-func New(tests Tests) *Api {
+func New(auth Auth, tests Tests) *Api {
 	return &Api{
 		log:   log.For("api"),
+		auth:  auth,
 		tests: tests,
 	}
 }
@@ -33,6 +44,14 @@ func (a *Api) RegisterRoutes(router *gin.Engine) {
 	tests := router.Group("/tests")
 	tests.GET("/search", a.tests.Search)
 	tests.GET("/searchCountPages", a.tests.SearchCountPages)
+
+	auth := router.Group("/auth")
+	auth.POST("/registration", a.auth.Registration)
+	auth.POST("/authentication", a.auth.Authentication)
+	auth.GET("/identification", a.auth.Identification)
+	auth.POST("/refresh", a.auth.Refresh)
+	auth.GET("/emailExist", a.auth.EmailExist)
+	auth.GET("/emailSalt", a.auth.EmailSalt)
 }
 
 func (a *Api) okResponse(c *gin.Context, response any) { a.response(c, http.StatusOK, response) }

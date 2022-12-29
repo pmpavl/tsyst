@@ -1,4 +1,4 @@
-package tests
+package request
 
 import (
 	"fmt"
@@ -8,18 +8,18 @@ import (
 )
 
 const (
-	zero string = "0"
-	one  string = "1"
-
-	maxClass uint64 = 11
+	queryPage  string = "page"
+	queryName  string = "name"
+	queryClass string = "class"
+	maxClass   uint64 = 11
 )
 
 // Parse query page must be in [1, inf), if empty set first page.
-func (s *Service) parsePage(c *gin.Context) (int64, error) {
+func parsePage(c *gin.Context) (int64, error) {
 	pageStr := c.Query(queryPage)
 
 	if pageStr == "" {
-		pageStr = one
+		pageStr = "1"
 	}
 
 	page, err := strconv.ParseInt(pageStr, 10, 64)
@@ -35,11 +35,11 @@ func (s *Service) parsePage(c *gin.Context) (int64, error) {
 }
 
 // Parse query class must be in [0, 11], if empty set zero class.
-func (s *Service) parseClass(c *gin.Context) (uint64, error) {
+func parseClass(c *gin.Context) (uint64, error) {
 	classStr := c.Query(queryClass)
 
 	if classStr == "" {
-		classStr = zero
+		classStr = "0"
 	}
 
 	class, err := strconv.ParseUint(classStr, 10, 64)

@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/pmpavl/tsyst/app/api"
+	"github.com/pmpavl/tsyst/app/api/auth"
 	"github.com/pmpavl/tsyst/app/api/tests"
 	"github.com/pmpavl/tsyst/app/router"
 	"github.com/pmpavl/tsyst/db"
@@ -26,10 +27,12 @@ func (a *App) Start(ctx context.Context) error {
 	res := resources.New(ctx)
 
 	dbTests := db.NewDBTests(res.Mongo)
+	dbUsers := db.NewDBUsers(res.Mongo)
 
 	tests := tests.New(dbTests)
+	auth := auth.New(dbUsers, res.Env.AccessTokenMaxAge, res.Env.RefreshTokenMaxAge)
 
-	api := api.New(tests)
+	api := api.New(auth, tests)
 	rtr := router.New(api)
 
 	srv := &http.Server{
