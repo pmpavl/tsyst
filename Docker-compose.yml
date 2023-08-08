@@ -1,0 +1,41 @@
+version: "3.9"
+
+networks:
+  default:
+    name: tsyst_network
+
+volumes:
+  mongo_data:
+    name: mongo_data
+  mongo_config:
+    name: mongo_config
+
+services:
+  # Backend service
+  service:
+    container_name: service
+    restart: always
+    env_file:
+      - .env.prod
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 7784:7784
+    depends_on:
+      - mongo
+  # Database service
+  mongo:
+    container_name: mongo
+    image: mongo:latest
+    restart: always
+    env_file:
+      - .env.prod
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: $MONGO_INITDB_ROOT_USERNAME
+      MONGO_INITDB_ROOT_PASSWORD: $MONGO_INITDB_ROOT_PASSWORD
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo_data:/data/db
+      - mongo_config:/data/configdb
