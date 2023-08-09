@@ -3,7 +3,6 @@ package models
 import (
 	"time"
 
-	"github.com/pmpavl/tsyst/pkg/constants"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -14,6 +13,8 @@ type Test struct {
 	Description string             `json:"description" bson:"description"`       // Описание
 	Tags        *TestTags          `json:"tags,omitempty" bson:"tags,omitempty"` // Теги теста
 
+	Tasks []*TestTask `json:"tasks,omitempty" bson:"tasks,omitempty"` // Задачи теста
+
 	CreatedAt time.Time `json:"-" bson:"createdAt"`
 	UpdatedAt time.Time `json:"-" bson:"updatedAt"`
 	DeletedAt time.Time `json:"-" bson:"deletedAt,omitempty"`
@@ -21,19 +22,17 @@ type Test struct {
 
 func NewTest(
 	path, name, description string,
-	classes constants.ClassNumbers,
-	complexity constants.ComplexityType,
+	tags *TestTags,
+	tasks []*TestTask,
 ) *Test {
-	var (
-		now  = time.Now()
-		tags = NewTestTags(classes, complexity)
-	)
+	now := time.Now()
 
 	return &Test{
 		Path:        path,
 		Name:        name,
 		Description: description,
 		Tags:        tags,
+		Tasks:       tasks,
 		CreatedAt:   now,
 		UpdatedAt:   now,
 	}

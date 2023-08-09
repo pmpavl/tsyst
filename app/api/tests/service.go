@@ -15,6 +15,7 @@ import (
 var ErrNothingFound = errors.New("nothing found")
 
 type DBTests interface {
+	ReadByPath(ctx context.Context, path string) (*models.Test, error)
 	Search(
 		ctx context.Context, name string, class constants.ClassNumber, complexity constants.ComplexityType, page int64,
 	) ([]*models.Test, error)

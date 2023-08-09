@@ -8,14 +8,14 @@ import (
 )
 
 type TestTags struct {
-	Classes    constants.ClassNumbers   `json:"classes" bson:"classes,omitempty"` // Подходящие классы для теста
 	Complexity constants.ComplexityType `json:"complexity" bson:"complexity"`     // Сложность
+	Classes    constants.ClassNumbers   `json:"classes" bson:"classes,omitempty"` // Подходящие классы для теста
 }
 
-func NewTestTags(classes constants.ClassNumbers, complexity constants.ComplexityType) *TestTags {
+func NewTestTags(complexity constants.ComplexityType, classes constants.ClassNumbers) *TestTags {
 	return &TestTags{
-		Classes:    classes,
 		Complexity: complexity,
+		Classes:    classes,
 	}
 }
 
@@ -34,10 +34,10 @@ func (t TestTags) MarshalJSON() ([]byte, error) {
 
 func (t TestTags) marshal() any {
 	return &struct {
-		Classes    string `json:"classes"`
 		Complexity string `json:"complexity"`
+		Classes    string `json:"classes"`
 	}{
-		Classes:    t.Classes.Readable(),
 		Complexity: t.Complexity.Readable(),
+		Classes:    t.Classes.Readable(),
 	}
 }

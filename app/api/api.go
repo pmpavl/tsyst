@@ -18,6 +18,7 @@ type Auth interface {
 
 type Tests interface {
 	Search(c *gin.Context)
+	Landing(c *gin.Context)
 }
 
 type API struct {
@@ -48,6 +49,7 @@ func (a *API) RegisterRoutes(router *gin.Engine) {
 
 	tests := router.Group("/tests")
 	tests.GET("/search", a.tests.Search)
+	tests.GET("/landing", a.tests.Landing)
 }
 
 func (a *API) okResponse(c *gin.Context, response any) { a.response(c, http.StatusOK, response) }

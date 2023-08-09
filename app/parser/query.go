@@ -14,11 +14,13 @@ const (
 	QueryClass      string = "class"
 	QueryComplexity string = "complexity"
 	QueryPage       string = "page"
+	QueryPath       string = "path"
 )
 
 var (
 	ErrUnexpectedEmail = errors.New("unexpected email")
 	ErrUnexpectedPage  = errors.New("unexpected page")
+	ErrUnexpectedPath  = errors.New("unexpected path")
 )
 
 // Парсинг почты из query запроса. Почта не должна быть пустая.
@@ -89,4 +91,14 @@ func ParsePage(c *gin.Context) (int64, error) {
 	}
 
 	return page, nil
+}
+
+// Парсинг пути из запроса. Путь не должен быть пустой.
+func ParsePath(c *gin.Context) (string, error) {
+	path := c.Query(QueryPath)
+	if path == "" {
+		return "", ErrUnexpectedPath
+	}
+
+	return path, nil
 }
