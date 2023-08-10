@@ -7,11 +7,12 @@ import (
 )
 
 type Test struct {
-	ID          primitive.ObjectID `json:"-" bson:"_id,omitempty"`               // ID в mongoDB
-	Path        string             `json:"path" bson:"path"`                     // Путь
-	Name        string             `json:"name" bson:"name"`                     // Название
-	Description string             `json:"description" bson:"description"`       // Описание
-	Tags        *TestTags          `json:"tags,omitempty" bson:"tags,omitempty"` // Теги теста
+	ID          primitive.ObjectID `json:"-" bson:"_id,omitempty"`                   // ID в mongoDB
+	Path        string             `json:"path" bson:"path"`                         // Путь
+	Name        string             `json:"name" bson:"name"`                         // Название
+	Description string             `json:"description" bson:"description"`           // Описание
+	Tags        *TestTags          `json:"tags,omitempty" bson:"tags,omitempty"`     // Теги теста
+	Repeat      *TestRepeat        `json:"repeat,omitempty" bson:"repeat,omitempty"` // Повторяемость теста
 
 	Tasks []*TestTask `json:"tasks,omitempty" bson:"tasks,omitempty"` // Задачи теста
 
@@ -23,6 +24,7 @@ type Test struct {
 func NewTest(
 	path, name, description string,
 	tags *TestTags,
+	repeat *TestRepeat,
 	tasks []*TestTask,
 ) *Test {
 	now := time.Now()
@@ -32,6 +34,7 @@ func NewTest(
 		Name:        name,
 		Description: description,
 		Tags:        tags,
+		Repeat:      repeat,
 		Tasks:       tasks,
 		CreatedAt:   now,
 		UpdatedAt:   now,
