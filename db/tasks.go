@@ -77,16 +77,7 @@ func (db *Tasks) Search(
 	})
 
 	// Берем первую из найденных задач
-	task := tasks[0]
-
-	// Если задача с выбором ответа, то перемешиваем варианты ответа
-	if task.Tags.Type == constants.TaskRadio && task.Radio != nil {
-		rand.Shuffle(len(task.Radio), func(i, j int) {
-			task.Radio[i], task.Radio[j] = task.Radio[j], task.Radio[i]
-		})
-	}
-
-	return task, nil
+	return tasks[0].ShuffleRadio(), nil
 }
 
 // Поисковой фильтр по сложности и темам без уже использованных IDs.
