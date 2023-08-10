@@ -18,7 +18,7 @@ func (s *Service) Identification(c *gin.Context) {
 	}
 
 	if _, err := s.dbUsers.ReadByAccessToken(c.Request.Context(), req.AccessToken); errors.Is(err, mongo.ErrNoDocuments) {
-		s.errorResponse(c, http.StatusNotFound, ErrAcessTokenNotExist)
+		s.errorResponse(c, http.StatusNotFound, ErrAccessTokenNotExist)
 
 		return //! 404
 	} else if err != nil {
