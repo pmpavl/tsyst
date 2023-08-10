@@ -24,7 +24,7 @@ func (s *Service) PasswordSaltByEmail(c *gin.Context) {
 
 		return //! 404
 	} else if err != nil {
-		s.errorResponse(c, http.StatusInternalServerError, errors.Wrap(err, "db users search by email"))
+		s.errorResponse(c, http.StatusInternalServerError, errors.Wrap(err, "db users read by email"))
 
 		return //! 500
 	}
