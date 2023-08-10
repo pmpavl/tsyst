@@ -22,7 +22,7 @@ func (s *Service) Identification(c *gin.Context) {
 
 		return //! 404
 	} else if err != nil {
-		s.errorResponse(c, http.StatusInternalServerError, errors.Wrap(err, "db users search by access token"))
+		s.errorResponse(c, http.StatusInternalServerError, errors.Wrap(err, "db users read by access token"))
 
 		return //! 500
 	}
