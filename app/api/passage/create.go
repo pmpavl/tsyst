@@ -95,7 +95,7 @@ func (s *Service) opportunityCreatePassage(
 
 	// Не прошло нужное время до повторного прохождения
 	if testRepeat.Type == constants.Repeatable &&
-		lastPassageEnd.Add(testRepeat.TimeToRepeat).After(time.Now()) {
+		lastPassageEnd.Add(testRepeat.TimeToRepeat.Time()).After(time.Now()) {
 		return ErrTimeToRepeat
 	}
 

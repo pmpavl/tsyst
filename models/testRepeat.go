@@ -2,7 +2,6 @@ package models
 
 import (
 	"encoding/json"
-	"time"
 
 	"github.com/pkg/errors"
 	"github.com/pmpavl/tsyst/pkg/constants"
@@ -10,10 +9,10 @@ import (
 
 type TestRepeat struct {
 	Type         constants.RepeatType `json:"type" bson:"type"`                                     // Повторяемость
-	TimeToRepeat time.Duration        `json:"timeToRepeat,omitempty" bson:"timeToRepeat,omitempty"` // Время до повторения
+	TimeToRepeat constants.Duration   `json:"timeToRepeat,omitempty" bson:"timeToRepeat,omitempty"` // Время до повторения
 }
 
-func NewTestRepeat(repeatType constants.RepeatType, timeToRepeat time.Duration) *TestRepeat {
+func NewTestRepeat(repeatType constants.RepeatType, timeToRepeat constants.Duration) *TestRepeat {
 	return &TestRepeat{
 		Type:         repeatType,
 		TimeToRepeat: timeToRepeat,
@@ -32,9 +31,9 @@ func (r TestRepeat) MarshalJSON() ([]byte, error) {
 func (r TestRepeat) marshal() any {
 	return &struct {
 		Type         string `json:"type"`
-		TimeToRepeat int64  `json:"timeToRepeat"` // Время до повторения в ms
+		TimeToRepeat string `json:"timeToRepeat"`
 	}{
 		Type:         r.Type.Readable(),
-		TimeToRepeat: r.TimeToRepeat.Milliseconds(),
+		TimeToRepeat: r.TimeToRepeat.Readable(),
 	}
 }
