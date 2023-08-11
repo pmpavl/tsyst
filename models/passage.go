@@ -1,8 +1,10 @@
 package models
 
 import (
+	"encoding/json"
 	"time"
 
+	"github.com/pkg/errors"
 	"github.com/pmpavl/tsyst/pkg/constants"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -59,4 +61,29 @@ func (p *Passage) TimeSpent() constants.Duration {
 	}
 
 	return constants.Duration(timeSpent)
+}
+
+func (p Passage) MarshalJSON() ([]byte, error) {
+	bytes, err := json.Marshal(p.marshal())
+	if err != nil {
+		return nil, errors.Wrap(err, "json marshal")
+	}
+
+	return bytes, nil
+}
+
+func (p Passage) marshal() any {
+	return &struct {
+		Points string         `json:"points"`
+		Score  string         `json:"score"`
+		Tasks  []*PassageTask `json:"tasks"`
+		Start  time.Time      `json:"start"`
+		End    time.Time      `json:"end"`
+	}{
+		Points: p.Points.Readable(),
+		Score:  p.Score.Readable(),
+		Tasks:  p.Tasks,
+		Start:  p.CreatedAt.Local(),
+		End:    p.End.Local(),
+	}
 }
