@@ -21,18 +21,27 @@ type Tests interface {
 	Landing(c *gin.Context)
 }
 
+type Passage interface {
+	Create(c *gin.Context)
+	Read(c *gin.Context)
+	Update(c *gin.Context)
+	End(c *gin.Context)
+}
+
 type API struct {
 	log *zerolog.Logger
 
-	auth  Auth
-	tests Tests
+	auth    Auth
+	tests   Tests
+	passage Passage
 }
 
-func New(auth Auth, tests Tests) *API {
+func New(auth Auth, tests Tests, passage Passage) *API {
 	return &API{
-		log:   log.For("api"),
-		auth:  auth,
-		tests: tests,
+		log:     log.For("api"),
+		auth:    auth,
+		tests:   tests,
+		passage: passage,
 	}
 }
 
@@ -50,6 +59,12 @@ func (a *API) RegisterRoutes(router *gin.Engine) {
 	tests := router.Group("/tests")
 	tests.GET("/search", a.tests.Search)
 	tests.GET("/landing", a.tests.Landing)
+
+	passage := router.Group("/passage")
+	passage.POST("", a.passage.Create)
+	passage.GET("", a.passage.Read)
+	passage.PATCH("", a.passage.Update)
+	passage.PATCH("/end", a.passage.End)
 }
 
 func (a *API) okResponse(c *gin.Context, response any) { a.response(c, http.StatusOK, response) }

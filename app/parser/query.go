@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 	"github.com/pmpavl/tsyst/pkg/constants"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 const (
@@ -15,6 +16,7 @@ const (
 	QueryComplexity string = "complexity"
 	QueryPage       string = "page"
 	QueryPath       string = "path"
+	QueryID         string = "id"
 )
 
 var (
@@ -101,4 +103,14 @@ func ParsePath(c *gin.Context) (string, error) {
 	}
 
 	return path, nil
+}
+
+// Парсинг ID из запроса. Должен быть primitive.ObjectID.
+func ParseID(c *gin.Context) (primitive.ObjectID, error) {
+	id, err := primitive.ObjectIDFromHex(c.Query(QueryID))
+	if err != nil {
+		return primitive.NilObjectID, errors.Wrap(err, "object id from hex")
+	}
+
+	return id, nil
 }

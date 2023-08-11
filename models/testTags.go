@@ -9,20 +9,23 @@ import (
 )
 
 type TestTags struct {
-	Complexity constants.ComplexityType `json:"complexity" bson:"complexity"`     // Сложность
-	Classes    constants.ClassNumbers   `json:"classes" bson:"classes,omitempty"` // Подходящие классы для теста
-	Points     constants.Points         `json:"points" bson:"points"`             // Баллов для прохождения
+	Complexity  constants.ComplexityType `json:"complexity" bson:"complexity"`     // Сложность
+	Classes     constants.ClassNumbers   `json:"classes" bson:"classes,omitempty"` // Подходящие классы для теста
+	Points      constants.Points         `json:"points" bson:"points"`             // Баллов для прохождения
+	TimePassing constants.Duration       `json:"timePassing" bson:"timePassing"`   // Времени на прохождение
 }
 
 func NewTestTags(
 	complexity constants.ComplexityType,
 	classes constants.ClassNumbers,
 	points constants.Points,
+	timePassing constants.Duration,
 ) *TestTags {
 	return &TestTags{
-		Complexity: complexity,
-		Classes:    classes,
-		Points:     points,
+		Complexity:  complexity,
+		Classes:     classes,
+		Points:      points,
+		TimePassing: timePassing.RoundMinute(), // Округляем до минут
 	}
 }
 
@@ -41,12 +44,14 @@ func (t TestTags) MarshalJSON() ([]byte, error) {
 
 func (t TestTags) marshal() any {
 	return &struct {
-		Complexity string `json:"complexity"`
-		Classes    string `json:"classes"`
-		Points     string `json:"points"`
+		Complexity  string `json:"complexity"`
+		Classes     string `json:"classes"`
+		Points      string `json:"points"`
+		TimePassing string `json:"timePassing"`
 	}{
-		Complexity: t.Complexity.Readable(),
-		Classes:    t.Classes.Readable(),
-		Points:     fmt.Sprintf("Нужно набрать %s", t.Points.Readable()),
+		Complexity:  t.Complexity.Readable(),
+		Classes:     t.Classes.Readable(),
+		Points:      fmt.Sprintf("Нужно набрать %s", t.Points.Readable()),
+		TimePassing: t.TimePassing.Readable(),
 	}
 }

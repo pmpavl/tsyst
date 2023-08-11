@@ -33,7 +33,7 @@ func (db *Tasks) Create(ctx context.Context, task *models.Task) (primitive.Objec
 	return id, errors.Wrap(err, "insert one")
 }
 
-func (db *Tasks) ReadByID(ctx context.Context, id primitive.ObjectID) (*models.Task, error) {
+func (db *Tasks) Read(ctx context.Context, id primitive.ObjectID) (*models.Task, error) {
 	return db.read(ctx, bson.M{"_id": id})
 }
 

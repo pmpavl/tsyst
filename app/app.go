@@ -8,6 +8,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/pmpavl/tsyst/app/api"
 	"github.com/pmpavl/tsyst/app/api/auth"
+	"github.com/pmpavl/tsyst/app/api/passage"
 	"github.com/pmpavl/tsyst/app/api/tests"
 	"github.com/pmpavl/tsyst/app/router"
 	"github.com/pmpavl/tsyst/db"
@@ -28,13 +29,16 @@ func (a *App) Start(ctx context.Context) error {
 	var (
 		res = resources.New(ctx)
 
-		dbUsers = db.NewUsers(res.Mongo)
-		dbTests = db.NewTests(res.Mongo)
+		dbUsers    = db.NewUsers(res.Mongo)
+		dbTests    = db.NewTests(res.Mongo)
+		dbTasks    = db.NewTasks(res.Mongo)
+		dbPassages = db.NewPassages(res.Mongo)
 
-		auth  = auth.New(dbUsers)
-		tests = tests.New(dbTests)
+		auth    = auth.New(dbUsers)
+		tests   = tests.New(dbTests)
+		passage = passage.New(dbUsers, dbTests, dbTasks, dbPassages)
 
-		api = api.New(auth, tests)
+		api = api.New(auth, tests, passage)
 		rtr = router.New(api)
 
 		srv = &http.Server{
