@@ -39,6 +39,7 @@ func (s *Service) Search(c *gin.Context) {
 	user, _ := s.dbUsers.ReadByAccessToken(c.Request.Context(), req.AccessToken)
 
 	cards := make([]*models.TestCard, 0, len(tests))
+
 	for _, test := range tests {
 		card := test.Card()
 
