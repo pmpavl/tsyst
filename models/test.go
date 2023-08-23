@@ -14,7 +14,8 @@ type Test struct {
 	Tags        *TestTags          `json:"tags,omitempty" bson:"tags,omitempty"`     // Теги теста
 	Repeat      *TestRepeat        `json:"repeat,omitempty" bson:"repeat,omitempty"` // Повторяемость теста
 
-	Tasks []*TestTask `json:"tasks,omitempty" bson:"tasks,omitempty"` // Задачи теста
+	Tasks    []*TestTask    `json:"tasks,omitempty" bson:"tasks,omitempty"`       // Задачи теста
+	Passages []*TestPassage `json:"passages,omitempty" bson:"passages,omitempty"` // Прохождения
 
 	CreatedAt time.Time `json:"-" bson:"createdAt"`
 	UpdatedAt time.Time `json:"-" bson:"updatedAt"`
@@ -40,6 +41,8 @@ func NewTest(
 		UpdatedAt:   now,
 	}
 }
+
+func (t *Test) AddPassages(passages []*TestPassage) { t.Passages = passages }
 
 func (t *Test) Card() *TestCard {
 	return &TestCard{

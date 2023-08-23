@@ -30,10 +30,10 @@ func (r TestRepeat) MarshalJSON() ([]byte, error) {
 
 func (r TestRepeat) marshal() any {
 	return &struct {
-		Type         string `json:"type"`
-		TimeToRepeat string `json:"timeToRepeat"`
+		Type         string             `json:"type"`
+		TimeToRepeat constants.Duration `json:"timeToRepeat"`
 	}{
 		Type:         r.Type.Readable(),
-		TimeToRepeat: r.TimeToRepeat.Readable(),
+		TimeToRepeat: r.TimeToRepeat,
 	}
 }

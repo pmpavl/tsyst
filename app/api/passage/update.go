@@ -79,7 +79,12 @@ func (s *Service) answerPassageTask(passage *models.Passage, num int, answerUser
 	passageTask.TimeSpent = passage.TimeSpent()
 
 	if passageTask.IsCorrect() {
+		passageTask.Correct = true
 		passage.Score += passageTask.Points
+	}
+
+	if passage.IsPassed() {
+		passage.Passed = true
 	}
 
 	passage.UpdatedAt = now

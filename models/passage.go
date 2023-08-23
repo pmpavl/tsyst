@@ -14,8 +14,11 @@ type Passage struct {
 	UserID primitive.ObjectID `json:"-" bson:"userID,omitempty"` // ID пользователя
 	TestID primitive.ObjectID `json:"-" bson:"testID,omitempty"` // ID теста
 
+	Path   string           `json:"path" bson:"path"`     // Путь до теста
+	Name   string           `json:"name" bson:"name"`     // Название теста
 	Points constants.Points `json:"points" bson:"points"` // Баллов для прохождения
 	Score  constants.Points `json:"score" bson:"score"`   // Набрано баллов
+	Passed bool             `json:"passed" bson:"passed"` // Пройден ли тест
 
 	Tasks []*PassageTask `json:"tasks" bson:"tasks"` // Задачи прохождения
 
@@ -32,8 +35,11 @@ func NewPassage(userID primitive.ObjectID, test *Test, tasks []*PassageTask) *Pa
 	return &Passage{
 		UserID:    userID,
 		TestID:    test.ID,
+		Path:      test.Path,
+		Name:      test.Name,
 		Points:    test.Tags.Points,
 		Score:     constants.PointsZero,
+		Passed:    false,
 		Tasks:     tasks,
 		End:       test.Tags.TimePassing.End(),
 		CreatedAt: now,
@@ -41,7 +47,18 @@ func NewPassage(userID primitive.ObjectID, test *Test, tasks []*PassageTask) *Pa
 	}
 }
 
+func (p *Passage) Test() *TestPassage {
+	return &TestPassage{
+		ID:     p.ID,
+		Passed: p.Passed,
+		Start:  p.CreatedAt,
+		End:    p.End,
+	}
+}
+
 func (p *Passage) IsLastTask(num int) bool { return len(p.Tasks)-1 == num }
+
+func (p *Passage) IsPassed() bool { return p.Points <= p.Score }
 
 func (p *Passage) ActualTaskNum() int {
 	for num, task := range p.Tasks {
@@ -74,14 +91,20 @@ func (p Passage) MarshalJSON() ([]byte, error) {
 
 func (p Passage) marshal() any {
 	return &struct {
+		Path   string         `json:"path"`
+		Name   string         `json:"name"`
 		Points string         `json:"points"`
 		Score  string         `json:"score"`
+		Passed bool           `json:"passed"`
 		Tasks  []*PassageTask `json:"tasks"`
 		Start  time.Time      `json:"start"`
 		End    time.Time      `json:"end"`
 	}{
+		Path:   p.Path,
+		Name:   p.Name,
 		Points: p.Points.Readable(),
 		Score:  p.Score.Readable(),
+		Passed: p.Passed,
 		Tasks:  p.Tasks,
 		Start:  p.CreatedAt.Local(),
 		End:    p.End.Local(),

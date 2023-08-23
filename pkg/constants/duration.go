@@ -11,10 +11,11 @@ type Duration time.Duration // Длительность
 
 const DurationsZero Duration = 0
 
-func (d Duration) Time() time.Duration   { return time.Duration(d) }
-func (d Duration) End() time.Time        { return time.Now().Add(d.Time()) }
-func (d Duration) RoundMinute() Duration { return Duration(d.Time().Round(time.Minute)) }
-func (d Duration) RoundSecond() Duration { return Duration(d.Time().Round(time.Second)) }
+func (d Duration) Time() time.Duration        { return time.Duration(d) }
+func (d Duration) End() time.Time             { return time.Now().Add(d.Time()) }
+func (d Duration) RoundMinute() Duration      { return Duration(d.Time().Round(time.Minute)) }
+func (d Duration) RoundSecond() Duration      { return Duration(d.Time().Round(time.Second)) }
+func (d Duration) RoundMillisecond() Duration { return Duration(d.Time().Round(time.Millisecond)) }
 
 func (d Duration) Readable() string {
 	if d == DurationsZero {

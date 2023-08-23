@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	ErrAccessTokenNotExist   = errors.New("access token not exist")  // Access токен не существует
+	ErrAccessTokenNotExist  = errors.New("access token not exist")  // Access токен не существует
 	ErrRefreshTokenNotExist = errors.New("refresh token not exist") // Refresh токен не существует
 	ErrEmailNotExist        = errors.New("email not exist")         // Почта не существует
 	ErrEmailAlreadyExist    = errors.New("email already exist")     // Почта уже используется

@@ -49,11 +49,10 @@ func (db *Passages) read(ctx context.Context, filter primitive.M) (*models.Passa
 	return &passage, nil
 }
 
-// Поиск последнего прохождения пользователем теста.
-func (db *Passages) SearchLastUserPassage(
+func (db *Passages) SearchUserPassages(
 	ctx context.Context,
 	userID, testID primitive.ObjectID,
-) (*models.Passage, error) {
+) ([]*models.Passage, error) {
 	var passages []*models.Passage
 
 	cur, err := db.coll.Find(ctx, bson.M{"userID": userID, "testID": testID}, options.Find().SetSort(bson.M{"end": -1}))
@@ -67,7 +66,20 @@ func (db *Passages) SearchLastUserPassage(
 		return nil, mongo.ErrNoDocuments
 	}
 
-	return passages[0], nil
+	return passages, nil
+}
+
+// Поиск последнего прохождения пользователем теста.
+func (db *Passages) SearchLastUserPassage(
+	ctx context.Context,
+	userID, testID primitive.ObjectID,
+) (*models.Passage, error) {
+	passages, err := db.SearchUserPassages(ctx, userID, testID)
+	if err != nil {
+		return nil, err
+	}
+
+	return passages[0], err
 }
 
 func (db *Passages) Update(ctx context.Context, passage *models.Passage) error {

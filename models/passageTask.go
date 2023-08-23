@@ -14,14 +14,16 @@ type PassageTask struct {
 	Task `json:",inline" bson:",inline"` // Задача
 
 	Points     constants.Points   `json:"points" bson:"points"`                             // Баллов за задачу
+	Correct    bool               `json:"correct" bson:"correct"`                           // Правильность ответа
 	AnswerUser string             `json:"answerUser,omitempty" bson:"answerUser,omitempty"` // Ответ пользователя
 	TimeSpent  constants.Duration `json:"timeSpent,omitempty" bson:"timeSpent,omitempty"`   // Времени потрачено
 }
 
 func NewPassageTask(task *Task, points constants.Points) *PassageTask {
 	return &PassageTask{
-		Task:   *task,
-		Points: points,
+		Task:    *task,
+		Points:  points,
+		Correct: false,
 	}
 }
 
@@ -45,6 +47,7 @@ func (t PassageTask) marshalBSON() any {
 		Tags       *TaskTags          `bson:"tags,omitempty"`
 		Radio      []string           `bson:"radio,omitempty"`
 		Points     constants.Points   `bson:"points"`
+		Correct    bool               `bson:"correct"`
 		AnswerUser string             `bson:"answerUser,omitempty"`
 		TimeSpent  constants.Duration `bson:"timeSpent,omitempty"`
 	}{
@@ -54,6 +57,7 @@ func (t PassageTask) marshalBSON() any {
 		Tags:       t.Tags,
 		Radio:      t.Radio,
 		Points:     t.Points,
+		Correct:    t.Correct,
 		AnswerUser: t.AnswerUser,
 		TimeSpent:  t.TimeSpent,
 	}
@@ -75,6 +79,7 @@ func (t PassageTask) marshalJSON() any {
 		Tags       *TaskTags `json:"tags,omitempty"`
 		Radio      []string  `json:"radio,omitempty"`
 		Points     string    `json:"points"`
+		Correct    bool      `json:"correct"`
 		AnswerUser string    `json:"answerUser,omitempty"`
 		TimeSpent  string    `json:"timeSpent,omitempty"`
 	}{
@@ -83,6 +88,7 @@ func (t PassageTask) marshalJSON() any {
 		Tags:       t.Tags,
 		Radio:      t.Radio,
 		Points:     t.Points.Readable(),
+		Correct:    t.Correct,
 		AnswerUser: t.AnswerUser,
 		TimeSpent:  t.TimeSpent.Readable(),
 	}

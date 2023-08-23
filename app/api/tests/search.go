@@ -24,7 +24,7 @@ func (s *Service) Search(c *gin.Context) {
 
 		return //! 500
 	} else if req.Page > countPages {
-		s.errorResponse(c, http.StatusBadRequest, ErrNothingFound)
+		s.errorResponse(c, http.StatusNotFound, ErrNothingFound)
 
 		return //! 400
 	}
@@ -36,9 +36,20 @@ func (s *Service) Search(c *gin.Context) {
 		return //! 500
 	}
 
+	user, _ := s.dbUsers.ReadByAccessToken(c.Request.Context(), req.AccessToken)
+
 	cards := make([]*models.TestCard, 0, len(tests))
-	for _, t := range tests {
-		cards = append(cards, t.Card())
+	for _, test := range tests {
+		card := test.Card()
+
+		if user != nil {
+			passage, _ := s.dbPassages.SearchLastUserPassage(c.Request.Context(), user.ID, test.ID)
+			if passage != nil {
+				card.AddLastPassage(passage.Test())
+			}
+		}
+
+		cards = append(cards, card)
 	}
 
 	s.okResponse(c, response.SearchResponse{CountPages: countPages, Cards: cards}) //! 200

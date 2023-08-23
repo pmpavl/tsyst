@@ -35,7 +35,7 @@ func (a *App) Start(ctx context.Context) error {
 		dbPassages = db.NewPassages(res.Mongo)
 
 		auth    = auth.New(dbUsers)
-		tests   = tests.New(dbTests)
+		tests   = tests.New(dbUsers, dbTests, dbPassages)
 		passage = passage.New(dbUsers, dbTests, dbTasks, dbPassages)
 
 		api = api.New(auth, tests, passage)
