@@ -1,4 +1,10 @@
-APP?=tsyst
+PROJECT?=prokmak
+APP?=tsyst-service
+PORT?=80
+PORT_APP?=7784
+
+CONTAINER_IMAGE?=$(PROJECT)/${APP}
+RELEASE?=0.0.1
 
 clean:
 	@rm -f bin/${APP}
@@ -21,11 +27,11 @@ build: clean
 gorun: build
 	@bin/${APP}
 
-docker-compose-up:
-	@docker-compose up -d --build
+container-build:
+	@docker build -t $(CONTAINER_IMAGE):$(RELEASE) .
 
-docker-compose-down:
-	@docker-compose down
-
-docker-compose-up-mongo:
-	@docker-compose up -d mongo
+container-run:
+	@docker run --name ${APP} -p ${PORT}:${PORT_APP} --rm \
+		-e "PORT=${PORT}" \
+		--env-file .env.prod \
+		$(CONTAINER_IMAGE):$(RELEASE)
