@@ -75,7 +75,6 @@ func (t PassageTask) MarshalJSON() ([]byte, error) {
 func (t PassageTask) marshalJSON() any {
 	return &struct {
 		Condition  string    `json:"condition"`
-		Answer     string    `json:"answer"`
 		Tags       *TaskTags `json:"tags,omitempty"`
 		Radio      []string  `json:"radio,omitempty"`
 		Points     string    `json:"points"`
@@ -84,7 +83,6 @@ func (t PassageTask) marshalJSON() any {
 		TimeSpent  string    `json:"timeSpent,omitempty"`
 	}{
 		Condition:  t.Condition,
-		Answer:     t.Answer,
 		Tags:       t.Tags,
 		Radio:      t.Radio,
 		Points:     t.Points.Readable(),
