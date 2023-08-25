@@ -4,7 +4,7 @@ PORT?=80
 PORT_APP?=7784
 
 CONTAINER_IMAGE?=$(PROJECT)/${APP}
-RELEASE?=0.0.2
+RELEASE?=0.0.1
 
 clean:
 	@rm -f bin/${APP}
