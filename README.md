@@ -1,4 +1,4 @@
-# School testing system service
+# TSYST Service
 
 ```
 Deprecated
